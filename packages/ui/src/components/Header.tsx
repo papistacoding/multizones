@@ -3,21 +3,44 @@
 import Link from "next/link";
 import { useState, useRef } from "react";
 
-export default function Header() {
+type SmartLinkProps = {
+  href: string;
+  children: React.ReactNode;
+  style?: React.CSSProperties;
+  basePath?: string;
+};
+
+export function SmartLink({ href, children, style, basePath }: SmartLinkProps) {
+  const isSameZone = !!basePath && href.startsWith(basePath);
+
+  if (isSameZone) {
+    const zoneHref = href.slice(basePath.length) || "/";
+    return (
+      <Link href={zoneHref} style={style}>
+        {children}
+      </Link>
+    );
+  }
+
+  return (
+    <a href={href} style={style}>
+      {children}
+    </a>
+  );
+}
+export default function Header({ basePath }: { basePath?: string }) {
   const [hovered, setHovered] = useState<string | null>(null);
   const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleMouseEnter = (menu: string) => {
-    if (hideTimeoutRef.current) {
-      clearTimeout(hideTimeoutRef.current);
-    }
+    if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
     setHovered(menu);
   };
 
   const handleMouseLeave = () => {
     hideTimeoutRef.current = setTimeout(() => {
       setHovered(null);
-    }, 200); // 200ms delay before hiding
+    }, 200);
   };
 
   const navItemStyle: React.CSSProperties = {
@@ -57,9 +80,9 @@ export default function Header() {
       }}
     >
       <nav style={{ display: "flex", gap: "1.5rem" }}>
-        <Link href="/" style={navItemStyle}>
+        <a href="/" style={navItemStyle}>
           Home
-        </Link>
+        </a>
 
         {/* App A */}
         <div
@@ -74,12 +97,20 @@ export default function Header() {
               onMouseEnter={() => handleMouseEnter("app-a")}
               onMouseLeave={handleMouseLeave}
             >
-              <a href="/app-a/page1" style={linkStyle}>
+              <SmartLink
+                href="/app-a/page1"
+                basePath={basePath}
+                style={linkStyle}
+              >
                 Page 1
-              </a>
-              <Link href="/app-a/page2" style={linkStyle}>
+              </SmartLink>
+              <SmartLink
+                href="/app-a/page2"
+                basePath={basePath}
+                style={linkStyle}
+              >
                 Page 2
-              </Link>
+              </SmartLink>
             </div>
           )}
         </div>
@@ -97,12 +128,20 @@ export default function Header() {
               onMouseEnter={() => handleMouseEnter("app-b")}
               onMouseLeave={handleMouseLeave}
             >
-              <Link href="/app-b/page1" style={linkStyle}>
+              <SmartLink
+                href="/app-b/page1"
+                basePath={basePath}
+                style={linkStyle}
+              >
                 Page 1
-              </Link>
-              <Link href="/app-b/page2" style={linkStyle}>
+              </SmartLink>
+              <SmartLink
+                href="/app-b/page2"
+                basePath={basePath}
+                style={linkStyle}
+              >
                 Page 2
-              </Link>
+              </SmartLink>
             </div>
           )}
         </div>

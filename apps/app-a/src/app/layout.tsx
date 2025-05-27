@@ -28,7 +28,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Header />
+        <Header basePath="/app-a" />
         <p>asdasd</p>
         {children}
       </body>

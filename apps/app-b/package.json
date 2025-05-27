@@ -5,10 +5,11 @@
   "scripts": {
     "dev": "next dev -p 3002",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 3002",
     "lint": "next lint"
   },
   "dependencies": {
+    "@repo/ui": "file:../../packages/ui",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "next": "15.3.2"
